@@ -90,7 +90,7 @@ func CameraShot(device string, pictureFile string) {
 }
 
 func GitPush() {
-	cmd := exec.Command("gitpush")
+	cmd := exec.Command("/usr/bin/git", "gitpush")
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Println(err.Error())
