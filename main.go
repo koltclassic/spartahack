@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"time"
 	// "strings"
 
 	//Third Party Packages
@@ -76,7 +77,7 @@ func ClarafaiTag(cameraNumber string) []string {
 	return (m.Results[0].Result.Tag.Classes)
 }
 
-func TakePictures(w http.ResponseWriter, r *http.Request) {
+func TakePictures() {
 	os.Chdir("./pictures")
 	CameraShot("/dev/video0", "Picture0.jpg")
 	CameraShot("/dev/video1", "Picture1.jpg")
@@ -115,6 +116,10 @@ func Rest(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func TakePicturesHandle(w http.ResponseWriter, r *http.Request) {
+	TakePictures()
+}
+
 func InitServer() {
 	wd, err := os.Getwd()
 	if err != nil {
@@ -122,7 +127,7 @@ func InitServer() {
 	}
 	path := fmt.Sprintf("%s/pictures", wd)
 	fs = http.FileServer(http.Dir(path))
-	Router.HandleFunc("/takepictures", TakePictures)
+	Router.HandleFunc("/takepictures", TakePicturesHandle)
 	http.HandleFunc("/", Rest)
 	http.ListenAndServe(":1337", nil)
 }
@@ -135,7 +140,23 @@ func ServeFirebase(cam0 []string, cam1 []string) {
 	fmt.Println(jack)
 }
 
+func CheckFirebase() {
+	CallWait := 200 * time.Millisecond
+	fire, err := new(firebase.Client)
+	fire.Init("https://radiant-inferno-3957.firebaseio.com/", "", nil)
+	check, _ := fire.Value()
+	if check != nil {
+		params := map[string]string{}
+		fire.Remove("web/data/check", params)
+		TakePictures()
+	} else {
+		time.Sleep(CallWait)
+		CheckFirebase()
+	}
+}
+
 func main() {
 	//ensure there is a /pictures/ directory to save pics
+	go CheckFirebase()
 	InitServer()
 }
