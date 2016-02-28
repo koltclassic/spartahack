@@ -106,7 +106,7 @@ func InitServer() {
 	fs = http.FileServer(http.Dir(path))
 	Router.HandleFunc("/takepictures", TakePictures)
 	http.HandleFunc("/", Rest)
-	http.ListenAndServe(":80", nil)
+	http.ListenAndServe(":8000", nil)
 }
 
 func main() {
