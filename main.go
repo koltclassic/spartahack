@@ -72,14 +72,25 @@ func ClarafaiTag(n string) {
 
 func TakePictures(w http.ResponseWriter, r *http.Request) {
 	os.Chdir("./pictures")
-
 	CameraShot("/dev/video0", "Picture0.jpg")
 	CameraShot("/dev/video1", "Picture1.jpg")
 	os.Chdir("../")
+	log.Print("pictures taken..")
+	GitPush()
 }
 
 func CameraShot(device string, pictureFile string) {
 	cmd := exec.Command("/usr/bin/fswebcam", "-r", "1280x720", pictureFile, "-d", device)
+	out, err := cmd.Output()
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	fmt.Print(string(out))
+}
+
+func GitPush() {
+	cmd := exec.Command("gitpush")
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Println(err.Error())
