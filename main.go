@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+
 	// "strings"
 
 	//Third Party Packages
@@ -43,7 +44,7 @@ type Classes struct {
 }
 
 func ClarafaiTag() {
-	form := url.Values{"url": {"http://zacc.xyz/pictures/Picture0.jpg"}}
+	form := url.Values{"url": {"https://raw.githubusercontent.com/koltclassic/spartahack/master/pictures/Picture1.jpg"}}
 	//something := strings.NewReader(form.Encode())
 	// fmt.Print(form.Encode())
 	request, err := http.NewRequest("GET", "https://api.clarifai.com/v1/tag/?"+form.Encode(), nil)
@@ -72,14 +73,24 @@ func ClarafaiTag() {
 
 func TakePictures(w http.ResponseWriter, r *http.Request) {
 	os.Chdir("./pictures")
-
 	CameraShot("/dev/video0", "Picture0.jpg")
 	CameraShot("/dev/video1", "Picture1.jpg")
 	os.Chdir("../")
+	GitPush()
 }
 
 func CameraShot(device string, pictureFile string) {
 	cmd := exec.Command("/usr/bin/fswebcam", "-r", "1280x720", pictureFile, "-d", device)
+	out, err := cmd.Output()
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	fmt.Print(string(out))
+}
+
+func GitPush() {
+	cmd := exec.Command("gitpush")
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Println(err.Error())
@@ -110,5 +121,7 @@ func InitServer() {
 }
 
 func main() {
-	InitServer()
+	// ClarafaiTag()
+	// InitServer()
+	GitPush()
 }
