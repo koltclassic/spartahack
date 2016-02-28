@@ -14,6 +14,7 @@ import (
 	// "strings"
 
 	//Third Party Packages
+	"github.com/cosn/firebase"
 	"github.com/gorilla/mux"
 )
 
@@ -40,6 +41,11 @@ type Tags struct {
 
 type Classes struct {
 	Tag []string `json:"classes"`
+}
+
+type ClarifaiTagged struct {
+	FrontCam []string
+	BackCam  []string
 }
 
 func ClarafaiTag(n string) {
@@ -90,7 +96,7 @@ func CameraShot(device string, pictureFile string) {
 }
 
 func GitPush() {
-	cmd := exec.Command("/usr/bin/git", "gitpush")
+	cmd := exec.Command("gitpush")
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Println(err.Error())
@@ -120,8 +126,17 @@ func InitServer() {
 	http.ListenAndServe(":1337", nil)
 }
 
+func ServeFirebase() {
+	firebase := new(firebase.Client)
+	firebase.Init("https://radiant-inferno-3957.firebaseio.com/", "", nil)
+	n := &Name{First: "Jack", Last: "Sparrow"}
+	jack, _ := firebase.Child("web/data", nil, nil).Set("name", n, nil)
+	fmt.Println(jack)
+}
+
 func main() {
-	ClarafaiTag("0")
-	ClarafaiTag("1")
-	InitServer()
+	// ClarafaiTag("0")
+	// ClarafaiTag("1")
+	// InitServer()
+	ServeFirebase()
 }
