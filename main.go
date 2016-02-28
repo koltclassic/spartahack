@@ -76,6 +76,7 @@ func TakePictures(w http.ResponseWriter, r *http.Request) {
 	CameraShot("/dev/video0", "Picture0.jpg")
 	CameraShot("/dev/video1", "Picture1.jpg")
 	os.Chdir("../")
+	log.Print("pictures taken..")
 	GitPush()
 }
 
