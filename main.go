@@ -11,7 +11,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
-  // "strings"
+	// "strings"
 
 	//Third Party Packages
 	"github.com/gorilla/mux"
@@ -43,7 +43,7 @@ type Classes struct {
 }
 
 func ClarafaiTag() {
-	form := url.Values{"url": {"http://35.14.148.40:1337/Picture0.jpg"}}
+	form := url.Values{"url": {"http://alexaremember.tk//Picture0.jpg"}}
 	//something := strings.NewReader(form.Encode())
 	// fmt.Print(form.Encode())
 	request, err := http.NewRequest("GET", "https://api.clarifai.com/v1/tag/?"+form.Encode(), nil)
@@ -71,7 +71,7 @@ func ClarafaiTag() {
 }
 
 func TakePictures(w http.ResponseWriter, r *http.Request) {
-  os.Chdir("./pictures")
+	os.Chdir("./pictures")
 
 	CameraShot("/dev/video0", "Picture0.jpg")
 	CameraShot("/dev/video1", "Picture1.jpg")
@@ -89,27 +89,27 @@ func CameraShot(device string, pictureFile string) {
 }
 
 func Rest(w http.ResponseWriter, r *http.Request) {
-  match := new(mux.RouteMatch)
-  if Router.Match(r, match) {
-    match.Handler.ServeHTTP(w, r)
-  }  else {
-    fs.ServeHTTP(w, r)
-  }
+	match := new(mux.RouteMatch)
+	if Router.Match(r, match) {
+		match.Handler.ServeHTTP(w, r)
+	} else {
+		fs.ServeHTTP(w, r)
+	}
 }
 
 func InitServer() {
-  wd, err := os.Getwd()
-  if err != nil {
-    panic(err)  //ask how to do correctly TODO
-  }
-  path := fmt.Sprintf("%s/pictures", wd)
-  fs = http.FileServer(http.Dir(path))
-  Router.HandleFunc("/takepictures", TakePictures)
-  http.HandleFunc("/", Rest)
-	http.ListenAndServe(":1337", nil)
+	wd, err := os.Getwd()
+	if err != nil {
+		panic(err) //ask how to do correctly TODO
+	}
+	path := fmt.Sprintf("%s/pictures", wd)
+	fs = http.FileServer(http.Dir(path))
+	Router.HandleFunc("/takepictures", TakePictures)
+	http.HandleFunc("/", Rest)
+	http.ListenAndServe(":80", nil)
 }
 
 func main() {
 	InitServer()
-  ClarafaiTag()
+	ClarafaiTag()
 }
