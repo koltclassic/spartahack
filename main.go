@@ -43,7 +43,7 @@ type Classes struct {
 }
 
 func ClarafaiTag() {
-	form := url.Values{"url": {"http://alexaremember.tk//Picture0.jpg"}}
+	form := url.Values{"url": {"http://zacc.xyz/pictures/Picture0.jpg"}}
 	//something := strings.NewReader(form.Encode())
 	// fmt.Print(form.Encode())
 	request, err := http.NewRequest("GET", "https://api.clarifai.com/v1/tag/?"+form.Encode(), nil)
@@ -111,5 +111,4 @@ func InitServer() {
 
 func main() {
 	InitServer()
-	ClarafaiTag()
 }
