@@ -142,15 +142,17 @@ func ServeFirebase(cam0 []string, cam1 []string) {
 
 func CheckFirebase() {
 	CallWait := 200 * time.Millisecond
-	fire, err := new(firebase.Client)
+	fire := new(firebase.Client)
 	fire.Init("https://radiant-inferno-3957.firebaseio.com/", "", nil)
-	check, _ := fire.Value()
+	check := fire.Value()
 	if check != nil {
 		params := map[string]string{}
 		fire.Remove("web/data/check", params)
 		TakePictures()
+		CheckFirebase()
 	} else {
 		time.Sleep(CallWait)
+	        TakePictures()	
 		CheckFirebase()
 	}
 }
