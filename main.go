@@ -55,7 +55,7 @@ func ClarafaiTag(cameraNumber string) []string {
 	// fmt.Print(form.Encode())
 	request, err := http.NewRequest("GET", "https://api.clarifai.com/v1/tag/?"+form.Encode(), nil)
 	client := &http.Client{}
-	request.Header.Set("Authorization", "Bearer ZdoTcF7jWrTSLF6jmtDRHkGNhgp4Jy")
+	request.Header.Set("Authorization", "Bearer JZ2X4zaNE2JANdDVr5tDU5Gz7driKi")
 	if err != nil {
 		panic(err)
 	}
@@ -141,7 +141,7 @@ func ServeFirebase(cam0 []string, cam1 []string) {
 }
 
 func CheckFirebase() {
-	CallWait := 200 * time.Millisecond
+	CallWait := 600 * time.Second
 	fire := new(firebase.Client)
 	fire.Init("https://radiant-inferno-3957.firebaseio.com/", "", nil)
 	check := fire.Value()
@@ -159,6 +159,6 @@ func CheckFirebase() {
 
 func main() {
 	//ensure there is a /pictures/ directory to save pics
-	go CheckFirebase()
-	InitServer()
+	go InitServer()
+	CheckFirebase()
 }
