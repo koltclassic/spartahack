@@ -43,8 +43,8 @@ type Classes struct {
 	Tag []string `json:"classes"`
 }
 
-func ClarafaiTag() {
-	form := url.Values{"url": {"https://raw.githubusercontent.com/koltclassic/spartahack/master/pictures/Picture1.jpg"}}
+func ClarafaiTag(n string) {
+	form := url.Values{"url": {"https://raw.githubusercontent.com/koltclassic/spartahack/master/pictures/Picture" + n + ".jpg"}}
 	//something := strings.NewReader(form.Encode())
 	// fmt.Print(form.Encode())
 	request, err := http.NewRequest("GET", "https://api.clarifai.com/v1/tag/?"+form.Encode(), nil)
@@ -121,7 +121,7 @@ func InitServer() {
 }
 
 func main() {
-	// ClarafaiTag()
-	// InitServer()
-	GitPush()
+	// ClarafaiTag("0")
+	// ClarafaiTag("1")
+	InitServer()
 }
