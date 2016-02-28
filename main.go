@@ -48,8 +48,8 @@ type ClarifaiTagged struct {
 	BackCam  []string
 }
 
-func ClarafaiTag(n string) {
-	form := url.Values{"url": {"https://raw.githubusercontent.com/koltclassic/spartahack/master/pictures/Picture" + n + ".jpg"}}
+func ClarafaiTag(cameraNumber string) []string {
+	form := url.Values{"url": {"https://raw.githubusercontent.com/koltclassic/spartahack/master/pictures/Picture" + cameraNumber + ".jpg"}}
 	//something := strings.NewReader(form.Encode())
 	// fmt.Print(form.Encode())
 	request, err := http.NewRequest("GET", "https://api.clarifai.com/v1/tag/?"+form.Encode(), nil)
@@ -73,7 +73,7 @@ func ClarafaiTag(n string) {
 	m := Results{}
 	json.Unmarshal(buf.Bytes(), &m)
 	//fmt.Printf("%+v\n", m)
-	fmt.Println(m.Results[0].Result.Tag.Classes)
+	return (m.Results[0].Result.Tag.Classes)
 }
 
 func TakePictures(w http.ResponseWriter, r *http.Request) {
@@ -83,6 +83,7 @@ func TakePictures(w http.ResponseWriter, r *http.Request) {
 	os.Chdir("../")
 	log.Print("pictures taken..")
 	GitPush()
+	ServeFirebase(ClarafaiTag("0"), ClarafaiTag("1"))
 }
 
 func CameraShot(device string, pictureFile string) {
@@ -126,17 +127,15 @@ func InitServer() {
 	http.ListenAndServe(":1337", nil)
 }
 
-func ServeFirebase() {
+func ServeFirebase(cam0 []string, cam1 []string) {
 	firebase := new(firebase.Client)
 	firebase.Init("https://radiant-inferno-3957.firebaseio.com/", "", nil)
-	n := &Name{First: "Jack", Last: "Sparrow"}
-	jack, _ := firebase.Child("web/data", nil, nil).Set("name", n, nil)
+	CT := &ClarifaiTagged{FrontCam: cam0, BackCam: cam1}
+	jack, _ := firebase.Child("web/data", nil, nil).Set("name", CT, nil)
 	fmt.Println(jack)
 }
 
 func main() {
-	// ClarafaiTag("0")
-	// ClarafaiTag("1")
-	// InitServer()
-	ServeFirebase()
+	//ensure there is a /pictures/ directory to save pics
+	InitServer()
 }
