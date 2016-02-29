@@ -1,0 +1,11 @@
+{
+  "name": "spartahack",
+  "version": "1.0.0",
+  "description": "sparta hack 2016 alexa skill",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
