@@ -1,14 +1,7 @@
 /**
  * Created by abigaelonchiri on 2/27/16.
  */
-/**
- * This sample demonstrates a simple skill built with the Amazon Alexa Skills Kit.
- * The Intent Schema, Custom Slots, and Sample Utterances for this skill, as well as
- * testing instructions are located at http://amzn.to/1LzFrj6
- *
- * For additional samples, visit the Alexa Skills Kit Getting Started guide at
- * http://amzn.to/1LGWsLG
- */
+
  
 var https = require('https');
 var queryString = require('querystring');
@@ -20,10 +13,6 @@ exports.handler = function (event, context) {
     try {
         console.log("event.session.application.applicationId=" + event.session.application.applicationId);
 
-        /**
-         * Uncomment this if statement and populate with your skill's application ID to
-         * prevent someone else from configuring a skill that sends requests to this function.
-         */
         /*
          if (event.session.application.applicationId !== "amzn1.echo-sdk-ams.app.[unique-value-here]") {
          context.fail("Invalid Application ID");
@@ -55,111 +44,7 @@ exports.handler = function (event, context) {
     }
 };
 
-
-
-
-/*function sendItem(intent, session, callback) {
-    
-    console.log("in sendItem");
-    var itemName;
-    var messageString;
-    var cardTitle = intent.name;
-    var itemSlot = intent.slots.Item;
-    
-    sessionAttributes = createItemsAttributes(itemSlot);
-    
-    console.log(itemSlot.value);
-    
-    if (sessionAttributes) {
-       
-        itemName = itemSlot.value;
-    }
-    
-    
-    // The item to send
-    var message = {
-        ItemName: itemName, 
-    };
-    
-    console.log(itemName);
-     console.log(message);
-    
-    var itemString = queryString.stringify(message);
-    
-    console.log(itemString)
-    
-    // Options and headers for the HTTP request   
-    var options = {
-        host: '35.14.148.40',
-        port: 1337,
-        path: '/takepictures',
-        method: 'POST',
-        headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Content-Length': Buffer.byteLength(itemString),
-                 }
-    };
-    
-    // Setup the HTTP request
-    var req = https.request(options, function (res) {
-
-        res.setEncoding('utf-8');
-        
-        console.log(data);
-              
-        // Collect response data as it comes back.
-        var responseString = '';
-        res.on('data', function (data) {
-            responseString += data;
-        });
-        
-        // Log the responce received from Twilio.
-        // Or could use JSON.parse(responseString) here to get at individual properties.
-        res.on('end', function () {
-            console.log('Item sent was: ' + responseString);
-            //completedCallback('Item name was sent successfully');
-            var repromptText = null;
-            var shouldEndSession = false;
-            var speechOutput = "Item name was sent sucessfully " ; // change to "I know know you are looking for response string"
-               
-            
-        callback(sessionAttributes,
-        buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
-            
-            
-        });
-    });
-     
-    
-    // Handler for HTTP request errors.
-    req.on('error', function (e) {
-        console.error('HTTP error: ' + e.message);
-        
-        
-        var repromptText = null;
-        var shouldEndSession = false;
-        var speechOutput = "Item name was not sent sucessfully " ;
-        
-        callback(sessionAttributes,
-        buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
-        //completedCallback('Item name completed with error(s).');
-    });
-    
-    
-    // Send the HTTP request to the url
-    // Log the message we are sending 
-    console.log('Item name sent: ' + messageString);
-    
-    if (messageString) {
-        req.write(messageString);
-    }
-   
-    
-    req.end();
-  
-}*/
-
-
+// Many thanks to Abe from firebase for his assistance in working this out
 function getItem(intent, session, callback) {
     
     console.log("in getItem");
@@ -303,15 +188,15 @@ function onIntent(intentRequest, session, callback) {
   		console.log("intent", intentName)
   		
   		    // Dispatch to your skill's intent handlers
-    if ("MyColorIsIntent" === intentName) {
+    if ("MyItemIsIntent" === intentName) {
         
        // sendItem(intent, session, function callback(sessionAttributes, speechletResponse)
         //{ context.succeed(buildResponse(sessionAttributes, speechletResponse)); });
         
        getItem(intent, session, callback);
         
-    } else if ("WhatsMyColorIntent" === intentName) {
-       // getColorFromSession(intent, session, callback);
+    } else if ("WhatsMyItemIntent" === intentName) {
+       // getItemFromSession(intent, session, callback);
         console.log("going into getitem")
         
        getItem(intent, session, function callback(sessionAttributes, speechletResponse)
@@ -353,9 +238,9 @@ function getWelcomeResponse(callback) {
 }
 
 /**
- * Sets the color in the session and prepares the speech to reply to the user.
+ * Sets the item in the session and prepares the speech to reply to the user.
  */
-function setColorInSession(intent, session, callback) {
+function setItemInSession(intent, session, callback) {
    // camera1 = "laptop";
    // camera2 = "";
 
@@ -388,7 +273,7 @@ function createItemsAttributes(item) {
     };
 }
 
-function getColorFromSession(intent, session, callback) {
+function getItemFromSession(intent, session, callback) {
     var item;
     
     var repromptText = null;
